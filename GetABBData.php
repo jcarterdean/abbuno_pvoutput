@@ -13,6 +13,16 @@
 	
 	/* debug flag */
 	$debug = false;
+	
+	//loger update changes the storae locaiton of daily runtime
+	$loggerversion = '1.8.13';
+	
+	if($loggerversion == '1.8.13') {
+		$dayEnergy = 'E0_runtime';
+	} else {
+		$dayEnergy = 'EDay_i';
+	}
+	
 	/*
 		example cron to run every 5mins @ 1min interval past (e.g. 6mins/11mins
 		1-59/5 * * * * php /home/pi/abbuno_pvoutput/GetABBData.php >> /home/pi/abbuno_pvoutput/ABBLog.log 2>&1
@@ -105,7 +115,7 @@
 	
 	
 function sendtopvoutput($dataModel) {
-	global $pvout_sid,$pvout_apikey,$donation,$debug,$status;
+	global $pvout_sid,$pvout_apikey,$donation,$debug,$status,$dayEnergy;
 	//get previous 5min interval time
 	$prev5Min = str_pad((floor(date('i')/5) * 5), 2, '0', STR_PAD_LEFT);
 	$fields_string = '';
@@ -113,7 +123,7 @@ function sendtopvoutput($dataModel) {
 	$fields = array(
 		'd'=>date('Ymd'),
 		't'=>date('H:').$prev5Min,
-		'v1' => Round($dataModel['EDay_i'],2),
+		'v1' => Round($dataModel[$dayEnergy],2),
 		'v2' => Round($dataModel['PacTogrid'],2),
 		'v5' => Round($dataModel['TempInv'],2),
 		'v6' => Round($dataModel['Vgrid'],2)
